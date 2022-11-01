@@ -23,6 +23,15 @@ module.exports = app => {
   
     // Create a new Tutorial
     router.delete("/", account.deleteAll);
-  
+
+    //transation
+    router.post("/v1/createTransation", account.createTransaction)
+
+    router.get("/v1/allTransations", account.findAllTransaction)
+    // router.get("/v1/findData", account.findData)
+    router.post("/v1/createItem",account.createItem)
+
+    router.get("/v1/item/:itemId",account.getItems)
+
     app.use('/api/account', router);
   };

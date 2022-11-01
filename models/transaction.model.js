@@ -11,6 +11,14 @@ module.exports = (sequelize,Sequelize) => {
           isBroken: {
             type: Sequelize.BOOLEAN
           },
+          itemId:{
+            type: Sequelize.INTEGER,
+            forignKey:true
+          },
+          accountId:{
+            type: Sequelize.INTEGER,
+            forignKey:true
+          },
     })
     return Transaction
 }

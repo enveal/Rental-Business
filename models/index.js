@@ -24,16 +24,22 @@ db.accounts = require("./account.model.js")(sequelize, Sequelize);
 db.items = require("./items.model.js")(sequelize, Sequelize);
 db.transactions = require("./transaction.model.js")(sequelize, Sequelize);
 
-db.accounts.belongsToMany(db.transactions, {
-  through: "account_transaction",
-  as: "transaction",
-  foreignKey: "account_transaction_id",
-});
 
-db.transactions.belongsToMany(db.accounts, {
-  through: "account_transaction",
-  as: "accounts",
-  foreignKey: "transaction_account_id",
-});
+db.accounts.hasMany(db.transactions,{foreignKey:"accountId"})
+db.transactions.belongsTo(db.accounts,{foreignKey:"accountId"})
+db.transactions.belongsTo(db.items,{foreignKey:"itemId"})
+db.items.hasMany(db.transactions,{foreignKey:"itemId"})
+
+// db.accounts.belongsToMany(db.transactions, {
+//   through: "account_transaction",
+//   as: "transaction",
+//   foreignKey: "account_transaction_id",
+// });
+
+// db.transactions.belongsToMany(db.accounts, {
+//   through: "account_transaction",
+//   as: "accounts",
+//   foreignKey: "transaction_account_id",
+// });
 
 module.exports = db;

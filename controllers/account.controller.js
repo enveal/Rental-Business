@@ -1,6 +1,8 @@
 const db = require("../models");
 const Account = db.accounts;
 const Op = db.Sequelize.Op;
+const Transaction = db.transactions
+const Item = db.items
 
 exports.create = (req, res) => {
     // Validate request
@@ -143,3 +145,91 @@ exports.create = (req, res) => {
         });
       });
   };
+  exports.createTransaction = (req,res) => {
+    
+    const { type,isBroken,accountId,itemId} = req.body;
+    let transation = {
+      type,isBroken,accountId,itemId
+    }
+    console.log(transation,"transaction")
+    Transaction.create(transation).then(data=>{
+      res.send(data)
+    }).catch(err=>{
+      res.send(err)
+    })
+  }
+
+  exports.findAllTransaction = (req,res) => {
+    const {userId} = req.body;
+    console.log(userId,"userId of customer")
+    
+    
+    Account.findOne({
+      attributes:[],
+      include:[
+        {
+          model:Transaction,
+          include: [{model:Item,
+            attributes:["id","name","Rent","Description"]
+          }
+            
+          ],
+          attributes:["type","isBroken","createdAt"]
+      
+        },
+      ],
+      where:{id:userId}}).then(data=>{
+      res.send(data)
+    }).catch(error=>{
+      console.log(error)
+      res.send(error)
+    })
+
+  }
+
+  exports.createItem = (req,res) => {
+    const {name, Description, Rent, size} = req.body
+    if ((!name) || (!Description) || (!Rent)|| (!size)) {
+      res.status(400).send({
+        message: "Data Error"
+      });
+      return;
+    }
+    let item = {
+      name, Description, Rent, size
+    }
+    Item.create(item).then(data=>{
+      res.send(data)
+    }).catch(err=>{
+      res.send(err)
+    })
+  }
+
+  exports.getItems = (req,res) => {
+ 
+    let {itemId} = req.params;
+    console.log(Number(itemId),"itemId")
+    let id = Number(itemId)
+    
+    Item.findOne({
+      attributes:["id","name","Rent","Description"],
+      include:[
+        {
+          model:Transaction,
+          attributes:["type","isBroken","createdAt"],
+          include:[{
+            model:Account,
+            attributes:["name","email","id"]
+
+          }]
+        }
+      ],
+      where:{id}
+
+    }).then(data=>{
+      res.send(data)
+    }).catch(erorr=>{
+      res.send(erorr)
+    })
+
+  }
