@@ -18,4 +18,5 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.STRING(100)
         },
     })
+    return Item
 }
